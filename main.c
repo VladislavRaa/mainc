@@ -2,7 +2,8 @@
 #include <stdlib.h>
 //#include <memory.h>
 
-
+// вынести функции
+// использовать стандартный вывод ошибок
 
 int main(int argc, char *argv[])
 {
@@ -17,8 +18,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    FILE *ptrFile = fopen(argv[1], "r+t+"); //r+t+ для открытия .txt
-
+    FILE *ptrFile = fopen(argv[1], "r+"); //r+ для открытия 
+     //fopen возвращает кол-во считанных чисел
     if (ptrFile == NULL) {
      
         printf("Error opening file\n");
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
     //memset(temp_massive, 0, temp_size);
     rewind(ptrFile);
 
-    for (int i = zero; i < temp_size; i++)
+    for (int i = zero; i < temp_size; i++) //нужны проверка 
     {
 
         fscanf(ptrFile, "%d", &temp_massive[i]);
@@ -70,7 +71,7 @@ int main(int argc, char *argv[])
     
     for (int i = 0; i < temp_size ; i++) {
 
-    fprintf(ptrFile, "%d ", temp_massive[i]);
+    fprintf(ptrFile, "%d ", temp_massive[i]); //нужна проверка 
    
     } 
 
