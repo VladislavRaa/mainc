@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
+//#include <memory.h>
 
 
 
@@ -10,49 +10,50 @@ int main(int argc, char *argv[])
     int zero = 0;
     int c;
     int temp_size = 0;
-   // int temp = 0;
+ 
     if (argc != 2) {
+     
         printf("error arguments\n");
-        exit(0);
+        exit(1);
     }
 
     FILE *ptrFile = fopen(argv[1], "r+t+"); //r+t+ для открытия .txt
 
     if (ptrFile == NULL) {
+     
         printf("Error opening file\n");
-        exit(0);
+        exit(1);
     }
 
-    printf("--name_argv[1]-- :  %s\n", argv[1]);
 
 
-
-   while (fscanf(ptrFile, "%d", &c) == 1) {   //c буква
+    while (fscanf(ptrFile, "%d", &c) == 1) {   //%c буква
 
         temp_size += 1;
 
-        if (c == 0){
+        if (c == 0) {
 
             zero++;
         }
-
+      
     }
 
-    int *temp_massive = (int*) malloc(temp_size*sizeof(int));
-    memset(temp_massive, 0, temp_size);
+    int *temp_massive = (int*) calloc(temp_size, sizeof(int));
+    //memset(temp_massive, 0, temp_size);
     rewind(ptrFile);
 
-    for(int i = zero ; i < temp_size ; i++)
+    for (int i = zero; i < temp_size; i++)
     {
 
-        fscanf(ptrFile, "%d",&temp_massive[i]);
-        if(temp_massive[i] == 0)
+        fscanf(ptrFile, "%d", &temp_massive[i]);
+        
+        if (temp_massive[i] == 0) 
             i--;
-        // printf("c[%d]=%d  ",i,temp_massive[i]);
+     
     }
 
 
-    for(int i = zero;i < temp_size; i++) {// сортировка вставкой
+    for (int i = zero; i < temp_size; i++) {// сортировка вставками
         for (int j = i; j > zero && temp_massive[j - 1] > temp_massive[j]; j--) {
 
             int temp = temp_massive[j];
@@ -65,19 +66,19 @@ int main(int argc, char *argv[])
 
 
 
-rewind(ptrFile);
-for(int i = 0 ; i < temp_size ; i++){
-
-    //printf("c[%d]=%d  ",i, temp_massive[i]);
+    rewind(ptrFile);
+    
+    for (int i = 0; i < temp_size ; i++) {
 
     fprintf(ptrFile, "%d ", temp_massive[i]);
-}
+   
+    } 
 
-fclose(ptrFile);
-free(temp_massive);
+   // printf("%d ", temp_size);
 
-//printf("zero %d\n", zero);
-//printf("\nlast message\n");
+    fclose(ptrFile);
+    free(temp_massive);
 
-return 0;
+
+    return 0;
 }
