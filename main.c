@@ -1,85 +1,106 @@
 #include <stdio.h>
 #include <stdlib.h>
-//#include <memory.h>
+#include <math.h>
+#include "sgelem.h"
 
-// вынести функции
-// использовать стандартный вывод ошибок
 
-int main(int argc, char *argv[])
-{
+double evklid_norm(double *matr, int row, int col ){
 
-    int zero = 0;
-    int c;
-    int temp_size = 0;
- 
-    if (argc != 2) {
-     
-        printf("error arguments\n");
+    int sum = 0;
+
+    for (int i = 0; i < row; ++i) {
+        for (int j = 0; j < col; ++j) {
+
+            sum += fabs(get_elem(matr, i, j) * get_elem(matr, i, j));
+
+            //printf("%4.2f  ", get_elem(matr, i, j));
+
+        }
+    printf("\n");
+    }        return sqrt(sum);
+}
+
+
+
+int main(int argc, char *argv[]) {
+
+    int rows_n, cols_n;
+
+    if (argc == 1) {
+
+        printf("not files\n");
         exit(1);
     }
 
-    FILE *ptrFile = fopen(argv[1], "r+"); //r+ для открытия 
-     //fopen возвращает кол-во считанных чисел
-    if (ptrFile == NULL) {
-     
-        printf("Error opening file\n");
-        exit(1);
-    }
+
+    while (--argc > 0) {
 
 
 
-    while (fscanf(ptrFile, "%d", &c) == 1) {   //%c буква
+        FILE *ptrFile = fopen(argv[argc], "r+");
 
-        temp_size += 1;
+        if (ptrFile == NULL) {
 
-        if (c == 0) {
-
-            zero++;
+            printf("Error opening file\n");
+            exit(1);
         }
-      
-    }
-
-    int *temp_massive = (int*) calloc(temp_size, sizeof(int));
-    //memset(temp_massive, 0, temp_size);
-    rewind(ptrFile);
-
-    for (int i = zero; i < temp_size; i++) //нужны проверка 
-    {
-
-        fscanf(ptrFile, "%d", &temp_massive[i]);
-        
-        if (temp_massive[i] == 0) 
-            i--;
-     
-    }
 
 
-    for (int i = zero; i < temp_size; i++) {// сортировка вставками
-        for (int j = i; j > zero && temp_massive[j - 1] > temp_massive[j]; j--) {
+        fscanf(ptrFile, "%d %d", &rows_n, &cols_n);
 
-            int temp = temp_massive[j];
-            temp_massive[j] = temp_massive[j-1];
-            temp_massive[j-1] = temp;
 
+        double **matrix = malloc(sizeof(double *) * rows_n);
+
+        for (int i = 0; i < rows_n; i++) {
+            matrix[i] = malloc(sizeof(double) * cols_n);
 
         }
+
+
+        double elem = 0;
+
+
+
+
+        for(int i = 0; i < rows_n; ++i)
+        {
+            for(int j = 0; j < cols_n; ++j)
+            {
+                fscanf(ptrFile, "%lf", &elem) ;
+
+                set_elem(matrix, i, j, elem);
+
+                printf("[%d,%d:]  %4.2f  ",i, j, matrix[i][j]);
+
+            }
+                printf("\n");
+        }
+
+
+
+
+        for(int i = 0; i < rows_n; ++i)
+        {
+            for(int j = 0; j < cols_n; ++j)
+            {
+
+                printf("[%d,%d:]  %4.2f  ",i, j, get_elem(matrix, i, j));
+
+            }
+            printf("\n");
+        }
+
+        printf("%f\n", evklid_norm(matrix, rows_n, cols_n ));
+
+        for (int i = 0; i < cols_n; i++) {
+            free(matrix[i]);
+        }
+        free(matrix);
+
     }
 
-
-
-    rewind(ptrFile);
-    
-    for (int i = 0; i < temp_size ; i++) {
-
-    fprintf(ptrFile, "%d ", temp_massive[i]); //нужна проверка 
-   
-    } 
-
-   // printf("%d ", temp_size);
-
-    fclose(ptrFile);
-    free(temp_massive);
 
 
     return 0;
+
 }
