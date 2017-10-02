@@ -1,106 +1,83 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <math.h>
-#include "sgelem.h"
+#include "matrix.h"
+#include <string.h>
+#define MSG_LEN 1024
 
-
-double evklid_norm(double *matr, int row, int col ){
-
+double evklid_norm(Matrix *matr, int row, int col)
+{
     int sum = 0;
 
     for (int i = 0; i < row; ++i) {
         for (int j = 0; j < col; ++j) {
 
-            sum += fabs(get_elem(matr, i, j) * get_elem(matr, i, j));
-
-            //printf("%4.2f  ", get_elem(matr, i, j));
+            sum += pow(get_elem(matr, i, j), 2);
 
         }
-    printf("\n");
-    }        return sqrt(sum);
-}
-
-
-
-int main(int argc, char *argv[]) {
-
-    int rows_n, cols_n;
-
-    if (argc == 1) {
-
-        printf("not files\n");
-        exit(1);
     }
 
+    return sqrt(sum);
+}
+
+int main(int argc, char* argv[]) {
+
+    errno = 0;
+
+    errno_t error_num = errno;
+    char error_buf[MSG_LEN];
+
+    if (argc == 1) {
+       // error =
+        //printf("not files\n");
+        //exit(1);
+    }
 
     while (--argc > 0) {
 
+        errno = 0;
+
+        FILE *input_file = fopen(argv[argc], "r");
+
+        if(input_file) {
 
 
-        FILE *ptrFile = fopen(argv[argc], "r+");
 
-        if (ptrFile == NULL) {
+       // if (input_file == NULL) {
+            // errno_t error = strerror_r(error_num, error_buf, MSG_LEN);
+            //printf("Error opening file\n");
+            //exit(1);
+        //}
 
-            printf("Error opening file\n");
-            exit(1);
+        Matrix *array = create_matrix_from_file(input_file);
+
+        printf("%10.4f\n", evklid_norm(array,get_rows(array),get_cols(array)));
+
+        free_matrix(array);
+
         }
 
+        else {
+            errno_t error = strerror_r (error_num, error_buf, MSG_LEN);
 
-        fscanf(ptrFile, "%d %d", &rows_n, &cols_n);
-
-
-        double **matrix = malloc(sizeof(double *) * rows_n);
-
-        for (int i = 0; i < rows_n; i++) {
-            matrix[i] = malloc(sizeof(double) * cols_n);
-
-        }
-
-
-        double elem = 0;
-
-
-
-
-        for(int i = 0; i < rows_n; ++i)
-        {
-            for(int j = 0; j < cols_n; ++j)
-            {
-                fscanf(ptrFile, "%lf", &elem) ;
-
-                set_elem(matrix, i, j, elem);
-
-                printf("[%d,%d:]  %4.2f  ",i, j, matrix[i][j]);
-
+            switch (error) {
+                case EINVAL:
+                    fprintf (stderr, "strerror_r() failed: invalid error code, %d\n", error);
+                    break;
+                case ERANGE:
+                    fprintf (stderr, "strerror_r() failed: buffer too small: %d\n", MSG_LEN);
+                case 0:
+                    fprintf(stderr, "Error message : %s\n", error_buf);
+                    break;
+                default:
+                    fprintf (stderr, "strerror_r() failed: unknown error, %d\n", error);
+                    break;
             }
-                printf("\n");
         }
 
-
-
-
-        for(int i = 0; i < rows_n; ++i)
-        {
-            for(int j = 0; j < cols_n; ++j)
-            {
-
-                printf("[%d,%d:]  %4.2f  ",i, j, get_elem(matrix, i, j));
-
-            }
-            printf("\n");
-        }
-
-        printf("%f\n", evklid_norm(matrix, rows_n, cols_n ));
-
-        for (int i = 0; i < cols_n; i++) {
-            free(matrix[i]);
-        }
-        free(matrix);
 
     }
 
-
-
     return 0;
-
 }
