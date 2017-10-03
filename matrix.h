@@ -1,7 +1,6 @@
 //
 // Created by Vladislav Raspopin on 02.10.17.
 //
-
 #ifndef _MATRIX_H_
 #define _MATRIX_H_
 

@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <math.h>
 #include "matrix.h"
-#include <string.h>
+
 #define MSG_LEN 1024
 
-double evklid_norm(Matrix *matr, int row, int col)
-{
+double evklid_norm(Matrix *matr, int row, int col) {
+
     int sum = 0;
 
     for (int i = 0; i < row; ++i) {
@@ -21,63 +22,84 @@ double evklid_norm(Matrix *matr, int row, int col)
     return sqrt(sum);
 }
 
+void catch_error(int error, char *error_buf) {
+
+    switch (error) {
+        case EINVAL:
+
+            fprintf (stderr, "strerror_r() failed: Invalid argument, %d\n", error);
+
+            break;
+
+        case ERANGE:
+
+            fprintf (stderr, "strerror_r() failed: buffer too small: %d\n", MSG_LEN);
+
+            break;
+
+        case ENOENT:
+
+            fprintf (stderr, "strerror_r() failed: No such file or directory: %d\n", MSG_LEN);
+
+            break;
+
+        case 0:
+
+            fprintf(stderr, "Error message : %s\n", error_buf);
+            break;
+
+        default:
+
+            fprintf (stderr, "strerror_r() failed: unknown error, %d\n", error);
+            break;
+    }
+
+    exit(EXIT_FAILURE);
+}
+
 int main(int argc, char* argv[]) {
 
     errno = 0;
 
     errno_t error_num = errno;
+
     char error_buf[MSG_LEN];
 
     if (argc == 1) {
-       // error =
-        //printf("not files\n");
-        //exit(1);
+
+        error_num = EINVAL;
+        errno_t error = strerror_r (error_num, error_buf, MSG_LEN);
+        catch_error(error, error_buf);
+
     }
 
     while (--argc > 0) {
-
-        errno = 0;
-
+        
         FILE *input_file = fopen(argv[argc], "r");
 
         if(input_file) {
 
 
+            Matrix *array = create_matrix_from_file(input_file);
 
-       // if (input_file == NULL) {
-            // errno_t error = strerror_r(error_num, error_buf, MSG_LEN);
-            //printf("Error opening file\n");
-            //exit(1);
-        //}
+            printf("%10.4f\n", evklid_norm(array,get_rows(array),get_cols(array)));
 
-        Matrix *array = create_matrix_from_file(input_file);
-
-        printf("%10.4f\n", evklid_norm(array,get_rows(array),get_cols(array)));
-
-        free_matrix(array);
+            free_matrix(array);
 
         }
 
         else {
+
+            error_num = ENOENT;
+
             errno_t error = strerror_r (error_num, error_buf, MSG_LEN);
 
-            switch (error) {
-                case EINVAL:
-                    fprintf (stderr, "strerror_r() failed: invalid error code, %d\n", error);
-                    break;
-                case ERANGE:
-                    fprintf (stderr, "strerror_r() failed: buffer too small: %d\n", MSG_LEN);
-                case 0:
-                    fprintf(stderr, "Error message : %s\n", error_buf);
-                    break;
-                default:
-                    fprintf (stderr, "strerror_r() failed: unknown error, %d\n", error);
-                    break;
-            }
+            catch_error(error, error_buf);
+
         }
 
 
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

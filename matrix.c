@@ -46,17 +46,16 @@ Matrix *create_matrix(int row, int col){
 }
 
 void free_matrix(Matrix *matrix){
-    {
 
-        for (int i = 0; i < get_rows(matrix); ++i) {
+    for (int i = 0; i < get_rows(matrix); ++i) {
 
-            free(matrix -> matr[i]);
+        free(matrix->matr[i]);
 
-        }
-
-        free(matrix->matr);
-        free(matrix);
     }
+
+    free(matrix->matr);
+    free(matrix);
+
 }
 
 double get_elem(Matrix *matrix, int row, int col){
@@ -73,7 +72,8 @@ void set_elem(Matrix *matrix, int row, int col, double val){
 
 int get_rows(Matrix *matrix){
 
-    return matrix -> rows;
+    return matrix->rows;
+
 }
 
 int get_cols(Matrix *matrix){
