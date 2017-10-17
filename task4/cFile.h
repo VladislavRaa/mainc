@@ -18,6 +18,7 @@ public:
     cFile (char* file_name, int size_of_file, int date_of_creation, int number_of_hits);
     cFile ();
     ~cFile ();
+    cFile& operator = (const cFile& other);
 
 private:
 

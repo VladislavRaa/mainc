@@ -69,3 +69,14 @@ cFile::cFile (char* file_name, int size_of_file = 0, int date_of_creation = 0, i
 }
 
 cFile::~cFile () {}
+
+cFile& cFile::operator = (const cFile& other) {
+    if (this == &other) {
+        return *this;
+    }
+    file_name = other.file_name;
+    this->size_of_file = other.size_of_file;
+    this->date_of_creation = other.date_of_creation;
+    this->number_of_hits = other.number_of_hits;
+    return *this;
+}
