@@ -1,12 +1,8 @@
-#include <string>
+#ifndef UNTITLED3_FILE_H
+#define UNTITLED3_FILE_H
 //
 // Created by Vladislav Raspopin on 15.10.17.
 //
-
-#ifndef UNTITLED3_FILE_H
-#define UNTITLED3_FILE_H
-
-
 class cFile {
 
 public:
@@ -22,6 +18,7 @@ public:
     cFile (char* file_name, int size_of_file, int date_of_creation, int number_of_hits);
     cFile ();
     ~cFile ();
+
 private:
 
     char* file_name;
@@ -29,9 +26,6 @@ private:
     int date_of_creation;
     int number_of_hits;
 
-private:
-
 };
-
 
 #endif //UNTITLED3_FILE_H

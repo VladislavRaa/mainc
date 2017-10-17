@@ -1,6 +1,12 @@
 #include <iostream>
 #include "cFile.h"
 
+void show_input (cFile* file, int number_of_file) {
+    for(int i = 0; i < number_of_file; i++) {
+        file[i].show();
+    }
+}
+
 void sort_by_name (cFile* file, int number_of_file) {
     cFile temp;
     for (int i = 0; i < number_of_file - 1; i++) {
@@ -10,6 +16,7 @@ void sort_by_name (cFile* file, int number_of_file) {
             file[i] = temp;
         }
     }
+    show_input(file, number_of_file);
 }
 
 void sort_by_hits (cFile* file, int number_of_file, int hits) {
@@ -20,75 +27,55 @@ void sort_by_hits (cFile* file, int number_of_file, int hits) {
     }
 }
 
-void sort_by_date (cFile* file, int number_of_file, int date) {
+void sort_by_size (cFile* file, int number_of_file, int size) {
     for(int i = 0; i < number_of_file; i++) {
-        if (file[i].get_date_of_creation() > number_of_file)
+        if (file[i].get_size_of_file() > size)
             file[i].show();
-
     }
 }
 
 int main() {
 
+    int number_of_file = 0;
+    char *name = new char[128];
+    int size = 0;
+    int date = 0;
+    int hits = 0;
 
+    cFile *file = new cFile [sizeof(cFile)];
 
-    char str[]="big bag";
-    char * name = str;
-    int size = 11;
-    int date = 22;
-    int hits = 33;
-    int number_of_file = 3;
+    while (true) {
+        std::cout << "ENTER the Name: " << std::endl;
+        std::cin >> name;
+        std::cout << "ENTER size, date in format: ddmmyyyy, hits: " << std::endl;
+        std::cin >> size >> date >> hits;
 
+        if (size < 0 || date < 0 || hits < 0) {
+            std::cout << "wrong file" << std::endl;
+            break;
+        }
 
-   // cFile *file = new cFile (name, size, date, hits);
-
-     cFile *file = new cFile [sizeof(cFile)];
-
-    file[0].set(name, size, date, hits);
-
-    std::cout << "----file0----" << std::endl;
-
-
-    char str1 [] ="apple bag";
-    name = str1;
-    size = 44;
-    date = 55;
-    hits = 66;
-
-    file[1].set(name, size, date, hits);
-    std::cout << "----file1----" << std::endl;
-
-
-
-    char str2 [] ="clion bag";
-    name = str2;
-    size = 77;
-    date = 88;
-    hits = 99;
-
-    file[2].set(name, size, date, hits);
-
-    std::cout << "----file2----" << std::endl;
-
-
-    for(int i = 0; i < 3; i++){
-        file[i].show();
+        file[number_of_file].set(name, size, date, hits);
+        number_of_file++;
     }
 
+    show_input (file, number_of_file);
 
-    sort_by_name(file, 3);
+    std::cout << "function_sort_by_name: " << std::endl;
+    sort_by_name(file, number_of_file );
 
-    std::cout << "----sort----" << std::endl;
+    int input_hits;
+    std::cout << "ENTER number of hits: " << std::endl;
+    std::cin >> input_hits;
+    sort_by_hits (file, number_of_file, input_hits);
 
-    for(int i = 0; i < 3; i++){
-        file[i].show();
-    }
+    int input_size;
+    std::cout << "ENTER size: " << std::endl;
+    std::cin >> input_size;
+    sort_by_size (file, number_of_file, input_size);
 
-    sort_by_hits (file, number_of_file, 65);
-    sort_by_date (file, number_of_file,  67);
-
+    delete [] name;
     delete [] file;
-
 
     return 0;
 }
