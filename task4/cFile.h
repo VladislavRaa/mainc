@@ -7,8 +7,11 @@ class cFile {
 
 public:
 
-    void set (char* file_name, int size_of_file, int date_of_creation, int number_of_hits);
-    char* get_file_name();
+    void set_file_name(const char* file_name);
+    void set_size_of_file(int size_of_file);
+    void set_date_of_creation(int size_of_file);
+    void set_number_of_hits(int size_of_file);
+    const char* get_file_name();
     int get_size_of_file ();
     int get_date_of_creation ();
     int get_number_of_hits ();
