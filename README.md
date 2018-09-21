@@ -14,7 +14,7 @@
 
 
 
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| TC ID/Priority  | CCPG0001      |
+| --------------  | ------------- |
+| Content Cell    | Content Cell  |
+| Content Cell    | Content Cell  |
